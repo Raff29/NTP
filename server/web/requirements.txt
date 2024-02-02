@@ -1,0 +1,8 @@
+flask
+flask_session
+flask_login
+flask-sqlalchemy
+redis
+gunicorn 
+psycopg2-binary
+spyder-kernels==2.1.3
