@@ -28,3 +28,17 @@ def register_post():
   
   return redirect(url_for('main.dashboard'))
 
+@auth.route('/login', methods=['POST'])
+def login_post():
+  email = request.form.get('email')
+  password = request.form.get('password')
+  
+  user = db.session.query(User).filter_by(email=email).first()
+  
+  if not user or not user.check_password(password):
+    flash('Invalid email or password')
+    return redirect(url_for('auth.login'))
+  
+  session['user_id'] = user.id
+  
+  return redirect(url_for('main.dashboard'))
