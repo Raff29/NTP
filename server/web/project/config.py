@@ -26,3 +26,11 @@ class DevConfig(Config):
     DEBUG = True
     TESTING = True
     LOGIN_DISABLED = False 
+    
+class TestingConfig(Config):
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'test.db')
+    SESSION_TYPE = 'filesystem'
+    WTF_CSRF_ENABLED = False
+    LOGIN_DISABLED = True
+    SERVER_NAME = 'localhost:5000'  # Add this line

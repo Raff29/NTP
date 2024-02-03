@@ -6,3 +6,4 @@ redis
 gunicorn 
 psycopg2-binary
 spyder-kernels==2.1.3
+pytest
