@@ -1,10 +1,8 @@
-from flask import Blueprint, render_template,current_app, redirect, url_for, request, Flask, session
+from flask import Blueprint, render_template,current_app, redirect, url_for, request, Flask, flash, session
 from .models import User
 from . import db
 
 auth = Blueprint('auth', __name__)
-
-app = Flask(__name__)
 
 @auth.route('/register')
 def register():
@@ -15,11 +13,18 @@ def register_post():
   email = request.form.get('email')
   password = request.form.get('password')
   
+  user = db.session.query(User).filter_by(email=email).first()
+  
+  if user:
+    flash('Email address already exists')
+    return redirect(url_for('auth.register'))
+  
+  
   new_user = User(email=email, password=password)
   new_user.set_password(password)
   
   db.session.add(new_user)
   db.session.commit()
   
-  return redirect(url_for('dashboard'))
+  return redirect(url_for('main.dashboard'))
 
