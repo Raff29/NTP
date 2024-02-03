@@ -1,16 +1,19 @@
 import os
 from flask import Blueprint, flash, request, url_for, jsonify, redirect, current_app
 from werkzeug.utils import secure_filename
+from .auth import login_required
 
 upload = Blueprint('upload', __name__)
 
 
 def allowed_file(filename):
     return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in current_app.config['ALLOWED_EXTENSIONS']
+           filename.rsplit('.', 1)[1].lower(
+           ) in current_app.config['ALLOWED_EXTENSIONS']
 
 
 @upload.route('/upload', methods=['GET', 'POST'])
+@login_required
 def upload_file():
     if request.method == 'POST':
         if 'file' not in request.files:
@@ -24,7 +27,7 @@ def upload_file():
         filename = secure_filename(file.filename)
         file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
         return jsonify({'message': 'File successfully uploaded', 'filename': filename})
-      
+
     else:
         flash('Invalid file type')
         return redirect(url_for('main.dashboard'))
