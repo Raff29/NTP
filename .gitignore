@@ -28,3 +28,5 @@ env.bak/
 
 # Miscellaneous
 .DS_Store
+
+*.jpg

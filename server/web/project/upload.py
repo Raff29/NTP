@@ -23,7 +23,7 @@ def upload_file():
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
-        return redirect(url_for('download_file', filename=filename))
+        return jsonify({'message': 'File successfully uploaded', 'filename': filename})
       
     else:
         flash('Invalid file type')
