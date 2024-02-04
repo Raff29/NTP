@@ -22,16 +22,16 @@ def create_app():
     session.init_app(app)
     
     # blueprint for non-auth routes of app
-    from .main import main as main_blueprint
+    from .routes.main import main as main_blueprint
     app.register_blueprint(main_blueprint)
 
         
     # blueprint for auth routes in our app
-    from .auth import auth as auth_blueprint
+    from .routes.auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint)
     
     # blueprint for upload routes in our app
-    from .upload import upload as upload_blueprint
+    from .routes.upload import upload as upload_blueprint
     app.register_blueprint(upload_blueprint)
     
     return app
