@@ -15,7 +15,7 @@ class Config(object):
     SESSION_PERMANENT=False
     SESSION_USE_SIGNER=True
     SESSION_REDIS = redis.from_url(f"{os.environ.get('REDIS_URL')}")
-    UPLOAD_FOLDER = os.path.join(basedir,'./..', 'uploads')
+    UPLOAD_FOLDER = os.path.join(basedir,'./../..', 'uploads')
     ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'musicxml', 'mlx'}
     
 class ProdConfig(Config):
@@ -33,4 +33,4 @@ class TestingConfig(Config):
     SESSION_TYPE = 'filesystem'
     WTF_CSRF_ENABLED = False
     LOGIN_DISABLED = True
-    SERVER_NAME = 'localhost:5000'  # Add this line
+    SERVER_NAME = 'localhost:5000' 
