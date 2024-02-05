@@ -8,6 +8,8 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
+    is_admin = db.Column(db.Boolean, default=False)
+    is_archived = db.Column(db.Boolean, default=False)
     
     def set_password(self, password):
         self.password = generate_password_hash(password, method='pbkdf2:sha256', salt_length=20)
@@ -21,9 +23,13 @@ class User(UserMixin, db.Model):
     class InstructionLog(db.Model):
         __tablename__ = 'instruction_logs'
         id = db.Column(db.Integer, primary_key=True)
+        filename = db.Column(db.String(100), nullable=False)
         instructions = db.Column(db.String(100), nullable=False)
-        user_email = db.Column(db.String(100), db.ForeignKey('users.email'), nullable=False)
+        user_id = db.Column(db.Integer, db.models.ForeignKey('user.id'))
+        is_archived = db.Column(db.Boolean, default=False)
         timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+        
+        user = db.relationship('User', backref='instruction_logs')
 
         def __repr__(self):
             return f"<InstructionLog {self.id}>"
