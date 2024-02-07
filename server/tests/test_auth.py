@@ -6,7 +6,7 @@ class TestAuth:
     assert response.status_code == 200
 
   def test_register_post(self, test_client):
-    response = test_client.post(url_for('auth.register_post'), data={
+    response = test_client.post(url_for('auth.register'), data={
       'email': 'test@example.com',
       'password': 'password123'
     })

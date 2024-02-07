@@ -25,7 +25,6 @@ def create_app():
     from .routes.main import main as main_blueprint
     app.register_blueprint(main_blueprint)
 
-        
     # blueprint for auth routes in our app
     from .routes.auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint)
@@ -33,5 +32,8 @@ def create_app():
     # blueprint for upload routes in our app
     from .routes.upload import upload as upload_blueprint
     app.register_blueprint(upload_blueprint)
+    
+    from .routes.data_table import instruction_logs as instruction_logs_blueprint
+    app.register_blueprint(instruction_logs_blueprint)
     
     return app

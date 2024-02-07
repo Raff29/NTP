@@ -6,7 +6,7 @@ from .. import db
 instruction_logs = Blueprint('instruction_logs', __name__)
 
 
-@instruction_logs.route('/instruction_logs/user/<int:user_id>', methods=['GET'])
+@instruction_logs.route('/instruction_logs/<int:user_id>', methods=['GET'])
 @login_required
 def get_instruction_logs(user_id):
     instruction_logs = InstructionLog.query.filter_by(user_id=user_id).all()
@@ -20,17 +20,17 @@ def get_instruction_logs(user_id):
 def create_instruction_logs():
     data = request.get_json()
 
-    required_fields = ['user_id', 'filename', 'instruction']
+    required_fields = ['user_id', 'filename', 'instructions']
     if not all(field in data for field in required_fields):
         return jsonify({'error': 'Missing required fields'}), 400
 
-    if not isinstance(data['user_id'], int) or not isinstance(data['filename'], str) or not isinstance(data['instruction'], str):
+    if not isinstance(data['user_id'], int) or not isinstance(data['filename'], str) or not isinstance(data['instructions'], str):
         return jsonify({'error': 'Invalid data type'}), 400
 
     new_instruction_log = InstructionLog(
         user_id=data['user_id'],
         filename=data['filename'],
-        instruction=data['instruction'],
+        instructions=data['instructions'],
         is_archived=False
     )
 
@@ -45,15 +45,15 @@ def create_instruction_logs():
 def update_instruction_logs(id):
     data = request.get_json()
 
-    updated_instruction_log = InstructionLog.query.get(id)
+    updated_instruction_log = db.session.get(InstructionLog, id)
     if not updated_instruction_log:
         return jsonify({'error': 'Instruction log not found'}), 404
 
-    if data['filename'] == update_instruction_logs.filename and data['instruction'] == update_instruction_logs.instruction:
+    if data['filename'] == updated_instruction_log.filename and data['instructions'] == updated_instruction_log.instructions:
         return jsonify({'messange': 'No changes detected'}), 200
 
     updated_instruction_log.filename = data['filename']
-    updated_instruction_log.instruction = data['instruction']
+    updated_instruction_log.instructions = data['instructions']
 
     db.session.commit()
 
@@ -63,7 +63,7 @@ def update_instruction_logs(id):
 @instruction_logs.route('/instruction_logs/<int:id>/archive', methods=['POST'])
 @login_required
 def archive_instruction_logs(id):
-    instruction_log = InstructionLog.query.get(id)
+    instruction_log = db.session.get(InstructionLog, id)
     if instruction_log is None:
         return jsonify({'error': 'Instruction log not found'}), 404
 
@@ -75,7 +75,7 @@ def archive_instruction_logs(id):
 # DELETE operation (admin only)
 
 
-@instruction_logs.route('/instruction_logs/<user:id>/<int:id>', methods=['DELETE'])
+@instruction_logs.route('/instruction_logs/<int:user_id>/<int:id>', methods=['DELETE'])
 @login_required
 def delete_instruction_logs(user_id, id):
     data = request.get_json()
