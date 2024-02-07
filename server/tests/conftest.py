@@ -9,13 +9,13 @@ def test_app():
     app = create_app()
     app.config.from_object(TestingConfig)
     with app.app_context():
-        yield app  # testing happens here
+        yield app
 
 
 @pytest.fixture(scope='module')
 def test_database(test_app):
     db.create_all()
-    yield db  # testing happens here
+    yield db
     db.session.remove()
     db.drop_all()
 

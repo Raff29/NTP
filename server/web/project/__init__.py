@@ -33,6 +33,7 @@ def create_app():
     from .routes.upload import upload as upload_blueprint
     app.register_blueprint(upload_blueprint)
     
+    # blueprint for data_table routes in our app
     from .routes.data_table import instruction_logs as instruction_logs_blueprint
     app.register_blueprint(instruction_logs_blueprint)
     
