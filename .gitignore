@@ -30,3 +30,5 @@ env.bak/
 .DS_Store
 
 *.jpg
+
+*.xml
