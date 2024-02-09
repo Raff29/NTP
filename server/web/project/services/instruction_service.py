@@ -1,8 +1,8 @@
 
-from music21 import converter, note, chord, instrument
+from music21 import converter, note, chord
 from music21 import tempo, dynamics, key
 import music21 as m21
-import fractions
+
 
 def sheet_music_to_instructions(file):
     instructions = []
@@ -32,12 +32,12 @@ def sheet_music_to_instructions(file):
                         elif isinstance(element, note.Rest):
                             instructions.append(process_rest(element))
                         elif isinstance(element, tempo.MetronomeMark):
-                            instructions.append(process_tempo(element))
+                            tempo_instructions = process_tempo(element)
+                            if tempo_instructions not in instructions:
+                                instructions.append(tempo_instructions)
                         elif isinstance(element, dynamics.Dynamic):
                             instructions.append(process_dynamic(element))
 
-    except m21.converter.ConverterException as e:
-        instructions.append(f"Error parsing file: {e}")
 
     return instructions
 
@@ -61,36 +61,54 @@ def extract_metadata(score):
 def process_note(note_element):
     pitch = note_element.pitch
     duration = note_element.duration
-    friendly_duration = get_friendly_duration(duration)
+    quarter_length = duration.quarterLength
+
+    ticks_to_hold = int(4 * quarter_length)
 
     articulation_text = ""
 
     for articulation in note_element.articulations:
         articulation_text = get_articulation_instruction(articulation)
-        break  # Only one articulation is supported for now
-    return f"Play the note {pitch} for a {friendly_duration}. {articulation_text}"
+        break
+
+    return f"Press the {pitch} key. Hold for {ticks_to_hold} ticks (feel {ticks_to_hold} heartbeats). {articulation_text}"
 
 
 def process_chord(chord_element):
     pitches = chord_element.pitches
     duration = chord_element.duration
-    friendly_duration = get_friendly_duration(duration)
 
-    pitch_names = [str(pitch) for pitch in pitches]
-    chord_name = ' and '.join(pitch_names)
+    if is_gracenote(chord_element):
+        pitch_names = [str(pitch) for pitch in pitches]
+        chord_name = ' and '.join(pitch_names)
+        return "Tap the chord {} like a quick bounce and then press the next note.".format(chord_name) 
 
-    return f"Play the chord {chord_name} for a {friendly_duration}."
+    else:
+        # Calculate how many ticks to hold the chord
+        quarter_length = duration.quarterLength
+        ticks_to_hold = int(4 * quarter_length)
+
+        pitch_names = [str(pitch) for pitch in pitches]
+        chord_name = ' and '.join(pitch_names)
+
+    return f"Play the chord {chord_name}. Hold for {ticks_to_hold} ticks."
 
 
 def process_rest(rest_element):
-    duration = rest_element.duration.quarterLength
-    fraction = fractions.Fraction(duration).limit_denominator()
-    return f"Rest for {fraction} of a beat."
+    duration = rest_element.duration
+
+    quarter_length = duration.quarterLength
+    ticks_to_rest = int(4 * quarter_length)
+
+    return f"Rest for {ticks_to_rest} ticks."
 
 
 def process_tempo(tempo_marking):
     tempo_value = tempo_marking.number
-    return f"Change the tempo to {tempo_value} beats per minute."
+    starting_message = "Find a steady, comfortable heartbeat pulse (you can feel it on your neck or wrist). Each pulse is one tick. If you want, tap your toe or count along out loud 'One, Two, Three, Four', with each number as a tick. BPM: {}".format(
+        tempo_value)
+
+    return starting_message
 
 
 def process_dynamic(dynamic):
@@ -98,29 +116,16 @@ def process_dynamic(dynamic):
     return f"Play with {dynamic_symbol}."
 
 
-def get_friendly_duration(duration):
-    quarter_length = duration.quarterLength
-    if quarter_length == 0.0:
-        duration = "as an acciaccatura"
-    else:
-        duration = f"{quarter_length} of a beat"
-        
-    return f"{duration}"  # 1/8, 1/16, etc.
-
-
 def get_articulation_instruction(articulation):
     if articulation.name == 'staccato':
-        return "Play the note short and detached."
+        return "Strike the note with a quick tap and immediately lift your finger."
     elif articulation.name == 'accent':
-        return "Emphasize the note."
-    elif articulation.name == 'tenuto':
-        return "Play the note to its full duration, or slightly longer."
-    elif articulation.name == 'staccatissimo':
-        return "Play the note very short and detached."
-    elif articulation.name == 'marcato':
-        return "Play the note with a strong, marked attack."
-    elif articulation.name == 'legato' or articulation.name == 'slur':
-        return "Play the note smoothly and connected to the next."
+        return "Hit the note hard, but immediately, as if surprised, let it get much quieter."
+    elif articulation.name == 'legato':
+        return "Play the notes smoothly connected, like your fingers are gently walking between keys."
     else:
         return ""
 
+def is_gracenote(chord_element):
+    duration = chord_element.duration.quarterLength
+    return duration < 0.125
