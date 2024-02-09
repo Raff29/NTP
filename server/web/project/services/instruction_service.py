@@ -7,36 +7,35 @@ import music21 as m21
 def sheet_music_to_instructions(file):
     instructions = []
 
-    # Try to parse the file and handle any errors
-    try:
-        score = converter.parse(file)
+    # Try to parse the file and handle any error
+    score = converter.parse(file)
 
-        instructions.extend(extract_metadata(score))
+    instructions.extend(extract_metadata(score))
 
         # Iterate through each part in the score
-        for part in score.parts:
-            if "Piano" in str(part.getInstrument()):
+    for part in score.parts:
+        if "Piano" in str(part.getInstrument()):
 
-                for measure in part.getElementsByClass('Measure'):
-                    for element in measure:
-                        if isinstance(element, note.Note):
-                            instructions.append(process_note(element))
-                            for articulation in element.articulations:
-                                instructions.append(
-                                    get_articulation_instruction(articulation))
-                        elif isinstance(element, chord.Chord):
-                            instructions.append(process_chord(element))
-                            for articulation in element.articulations:
-                                instructions.append(
-                                    get_articulation_instruction(articulation))
-                        elif isinstance(element, note.Rest):
-                            instructions.append(process_rest(element))
-                        elif isinstance(element, tempo.MetronomeMark):
-                            tempo_instructions = process_tempo(element)
-                            if tempo_instructions not in instructions:
-                                instructions.append(tempo_instructions)
-                        elif isinstance(element, dynamics.Dynamic):
-                            instructions.append(process_dynamic(element))
+            for measure in part.getElementsByClass('Measure'):
+                for element in measure:
+                    if isinstance(element, note.Note):
+                        instructions.append(process_note(element))
+                        for articulation in element.articulations:
+                            instructions.append(
+                                get_articulation_instruction(articulation))
+                    elif isinstance(element, chord.Chord):
+                        instructions.append(process_chord(element))
+                        for articulation in element.articulations:
+                            instructions.append(
+                                get_articulation_instruction(articulation))
+                    elif isinstance(element, note.Rest):
+                        instructions.append(process_rest(element))
+                    elif isinstance(element, tempo.MetronomeMark):
+                        tempo_instructions = process_tempo(element)
+                        if tempo_instructions not in instructions:
+                            instructions.append(tempo_instructions)
+                    elif isinstance(element, dynamics.Dynamic):
+                        instructions.append(process_dynamic(element))
 
 
     return instructions
