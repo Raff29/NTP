@@ -2,17 +2,16 @@
 from music21 import converter, note, chord
 from music21 import tempo, dynamics, key
 import music21 as m21
+from flask import current_app
 
 
 def sheet_music_to_instructions(file):
     instructions = []
 
-    # Try to parse the file and handle any error
     score = converter.parse(file)
 
     instructions.extend(extract_metadata(score))
 
-        # Iterate through each part in the score
     for part in score.parts:
         if "Piano" in str(part.getInstrument()):
 
@@ -128,3 +127,7 @@ def get_articulation_instruction(articulation):
 def is_gracenote(chord_element):
     duration = chord_element.duration.quarterLength
     return duration < 0.125
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in current_app.config['ALLOWED_EXTENSIONS']

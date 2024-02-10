@@ -1,4 +1,7 @@
-from flask import Blueprint, jsonify, request
+import os
+from flask import Blueprint, jsonify, request, current_app
+from project.services.instruction_service import sheet_music_to_instructions, allowed_file
+from werkzeug.utils import secure_filename
 from ..models import InstructionLog
 from .auth import login_required
 from .. import db
@@ -18,26 +21,35 @@ def get_instruction_logs(user_id):
 @instruction_logs.route('/instruction_logs', methods=['POST'])
 @login_required
 def create_instruction_logs():
-    data = request.get_json()
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file part in the request'}), 400
+    
+    file = request.files['file']
+    
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+    
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+        file.save(filepath)
+        
+        instructions = sheet_music_to_instructions(filepath)
+        
+        new_instruction_log = InstructionLog(
+            user_id=request.form['user_id'],
+            filename=filename,
+            instructions=instructions,
+            is_archived=False
+        )
+    
+        db.session.add(new_instruction_log)
+        db.session.commit()
+    
+        return jsonify(new_instruction_log.to_dict()), 201
 
-    required_fields = ['user_id', 'filename', 'instructions']
-    if not all(field in data for field in required_fields):
-        return jsonify({'error': 'Missing required fields'}), 400
-
-    if not isinstance(data['user_id'], int) or not isinstance(data['filename'], str) or not isinstance(data['instructions'], str):
-        return jsonify({'error': 'Invalid data type'}), 400
-
-    new_instruction_log = InstructionLog(
-        user_id=data['user_id'],
-        filename=data['filename'],
-        instructions=data['instructions'],
-        is_archived=False
-    )
-
-    db.session.add(new_instruction_log)
-    db.session.commit()
-
-    return jsonify(new_instruction_log.to_dict()), 201
+    return jsonify({'error': 'Invalid file type'}), 400
+        
 
 
 @instruction_logs.route('/instruction_logs/<int:id>', methods=['PUT'])

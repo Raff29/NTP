@@ -13,6 +13,8 @@ class User(UserMixin, db.Model):
     is_archived = db.Column(db.Boolean, default=False)
 
     def set_password(self, password):
+        if password is None:
+            raise ValueError('Password cannot be empty')
         self.password = generate_password_hash(
             password, method='pbkdf2:sha256', salt_length=20)
 
@@ -27,7 +29,7 @@ class InstructionLog(db.Model):
     __tablename__ = 'instruction_logs'
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String(100), nullable=False)
-    instructions = db.Column(db.String(100), nullable=False)
+    instructions = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     is_archived = db.Column(db.Boolean, default=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)

@@ -18,7 +18,7 @@ class Config(object):
     SESSION_REDIS = redis.from_url(f"{os.environ.get('REDIS_URL')}")
     UPLOAD_FOLDER = os.path.join(basedir, '..', 'uploads')
     ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png',
-                          'jpg', 'jpeg', 'musicxml', 'mlx'}
+                          'jpg', 'jpeg', 'musicxml', 'mlx', 'xml'}
 
 
 class ProdConfig(Config):

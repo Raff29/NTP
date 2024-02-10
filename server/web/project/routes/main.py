@@ -16,8 +16,3 @@ def index():
 @login_required
 def dashboard():
     return jsonify({"message": "Welcome to the dashboard"})
-
-
-@main.route('/static/<path:filename>')
-def staticfiles(filename):
-    return send_from_directory(main.config['STATIC_FOLDER'], filename)
