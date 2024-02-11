@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
+from flask_login import LoginManager
 from .config import DevConfig,ProdConfig
 import os
 
@@ -21,6 +22,10 @@ def create_app():
     db.init_app(app)
     session.init_app(app)
     
+    login_manager = LoginManager()
+    login_manager.init_app(app)
+
+
     # blueprint for non-auth routes of app
     from .routes.main import main as main_blueprint
     app.register_blueprint(main_blueprint)
