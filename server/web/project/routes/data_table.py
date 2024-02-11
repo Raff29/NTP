@@ -98,9 +98,6 @@ def archive_instruction_logs(id):
 @login_required
 @admin_required
 def delete_instruction_logs(user_id, id):
-    if current_user.id != user_id:
-        return jsonify({'error': 'Unauthorized Unauthorized'}), 401
-
     instruction_log = InstructionLog.query.get(id)
 
     if instruction_log is None or instruction_log.user_id != user_id:
