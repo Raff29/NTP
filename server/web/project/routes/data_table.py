@@ -1,18 +1,18 @@
 import os
 from flask import Blueprint, jsonify, request, current_app
+from flask_login import login_required, current_user
 from project.services.instruction_service import sheet_music_to_instructions, allowed_file
 from werkzeug.utils import secure_filename
 from ..models import InstructionLog
-from .auth import login_required
 from .. import db
 
 instruction_logs = Blueprint('instruction_logs', __name__)
 
 
-@instruction_logs.route('/instruction_logs/<int:user_id>', methods=['GET'])
+@instruction_logs.route('/instruction_logs', methods=['GET'])
 @login_required
-def get_instruction_logs(user_id):
-    instruction_logs = InstructionLog.query.filter_by(user_id=user_id).all()
+def get_instruction_logs():
+    instruction_logs = InstructionLog.query.filter_by(user_id=current_user.id).all()
     if not instruction_logs:
         return jsonify({'error': 'Instruction logs not found'}), 404
     return jsonify([instruction_log.to_dict() for instruction_log in instruction_logs]), 200
@@ -37,7 +37,7 @@ def create_instruction_logs():
         instructions = sheet_music_to_instructions(filepath)
 
         new_instruction_log = InstructionLog(
-            user_id=request.form['user_id'],
+            user_id=current_user.id,
             filename=filename,
             instructions=instructions,
             is_archived=False
@@ -86,15 +86,18 @@ def archive_instruction_logs(id):
 # DELETE operation (admin only)
 
 
-@instruction_logs.route('/instruction_logs/delete/<int:user_id>/<int:id>', methods=['DELETE'])
+@instruction_logs.route('/instruction_logs/delete/<int:id>', methods=['DELETE'])
 @login_required
-def delete_instruction_logs(user_id, id):
+def delete_instruction_logs(id):
+    if not current_user.is_authenticated:
+        return jsonify({'error': 'Unauthorized Unauthorized'}), 401
+    
     data = request.get_json()
     if not data['is_admin']:
         return jsonify({'error': 'Unauthorized Unauthorized'}), 401
 
     instruction_log = InstructionLog.query.filter_by(
-        user_id=user_id, id=id).first()
+        user_id=current_user.id, id=id).first()
 
     db.session.delete(instruction_log)
     db.session.commit()

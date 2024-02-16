@@ -1,4 +1,3 @@
-
 from music21 import converter, note, chord
 from music21 import tempo, dynamics, key
 import music21 as m21
@@ -35,7 +34,6 @@ def sheet_music_to_instructions(file):
                             instructions.append(tempo_instructions)
                     elif isinstance(element, dynamics.Dynamic):
                         instructions.append(process_dynamic(element))
-
 
     return instructions
 
@@ -79,7 +77,7 @@ def process_chord(chord_element):
     if is_gracenote(chord_element):
         pitch_names = [str(pitch) for pitch in pitches]
         chord_name = ' and '.join(pitch_names)
-        return "Tap the chord {} like a quick bounce and then press the next note.".format(chord_name) 
+        return "Tap the chord {} like a quick bounce and then press the next note.".format(chord_name)
 
     else:
         # Calculate how many ticks to hold the chord
@@ -124,10 +122,13 @@ def get_articulation_instruction(articulation):
     else:
         return ""
 
+
 def is_gracenote(chord_element):
     duration = chord_element.duration.quarterLength
     return duration < 0.125
 
+
 def allowed_file(filename):
     return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in current_app.config['ALLOWED_EXTENSIONS']
+           filename.rsplit('.', 1)[1].lower(
+           ) in current_app.config['ALLOWED_EXTENSIONS']

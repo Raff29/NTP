@@ -1,7 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for, request, current_app, jsonify, session
-from flask import jsonify, send_from_directory
-from .auth import login_required
-
+from flask_login import login_required, current_user
 from .. import db
 from ..models import User
 main = Blueprint('main', __name__)

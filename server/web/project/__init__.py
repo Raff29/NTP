@@ -2,16 +2,19 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 from flask_login import LoginManager
+from flask_wtf.csrf import CSRFProtect
 from .config import DevConfig,ProdConfig
 import os
 
 db = SQLAlchemy()
 session = Session()
 
+
 def create_app():
     app = Flask(__name__)
     config=os.environ.get('FLASK_ENV')
     app.config.from_object(DevConfig)
+    app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
     if config=="production":
         app.config.from_object(ProdConfig())
     elif config=="development":
@@ -21,9 +24,18 @@ def create_app():
         
     db.init_app(app)
     session.init_app(app)
-    
     login_manager = LoginManager()
+    login_manager.login_view = 'auth.login'
     login_manager.init_app(app)
+    
+    from .models import User
+    
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.query.get(int(user_id))
+    
+    csrf = CSRFProtect(app)
+    csrf.init_app(app)
 
 
     # blueprint for non-auth routes of app

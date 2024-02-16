@@ -12,6 +12,14 @@ class User(UserMixin, db.Model):
     is_admin = db.Column(db.Boolean, default=False)
     is_archived = db.Column(db.Boolean, default=False)
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'email': self.email,
+            'is_admin': self.is_admin,
+            'is_archived': self.is_archived
+        }
+
     def set_password(self, password):
         if password is None:
             raise ValueError('Password cannot be empty')
@@ -20,6 +28,7 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
+
 
     def __repr__(self):
         return f"<User {self.email}>"

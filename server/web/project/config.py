@@ -12,6 +12,7 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SESSION_TYPE = 'redis'
     SESSION_KEY_PREFIX = "flask_"
+    WTF_CSRF_ENABLED = False
     PERMANENT_SESSION_LIFETIME = timedelta(days=1)
     SESSION_PERMANENT = False
     SESSION_USE_SIGNER = True

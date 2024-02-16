@@ -32,3 +32,6 @@ env.bak/
 *.jpg
 
 *.xml
+
+# Node.js
+node_modules/

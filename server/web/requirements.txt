@@ -1,6 +1,6 @@
 flask
-flask_session
-flask_login
+flask-Session
+flask-login
 flask-sqlalchemy
 redis
 gunicorn 
@@ -9,3 +9,5 @@ spyder-kernels==2.1.3
 pytest
 pytest-mock
 music21
+Flask-WTF
+email_validator
