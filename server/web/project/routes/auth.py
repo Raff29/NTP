@@ -34,8 +34,7 @@ def register():
     else:
         flash("Form validation failed")
         flash("Form errors: ", form.errors)
-    return jsonify({'message': 'Signup Page'})
-
+    return jsonify({'errors': form.errors}), 400
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
