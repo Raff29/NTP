@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import SignupForm from "./components/SignupForm.tsx";
-import Layout from "./components/layout";
+import Layout from "./components/layout.tsx";
 
 function App() {
   return (
