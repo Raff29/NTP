@@ -1,10 +1,11 @@
+import React from "react";
 import { ChangeEvent, FormEvent, useState } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Alert from "@mui/material/Alert";
-import LoaderSpinner from "./LoaderSpinner";
+import LoaderSpinner from "./LoaderSpinner.tsx";
 
 interface SignupFormData {
   email: string;
@@ -12,7 +13,7 @@ interface SignupFormData {
   confirm_password: string;
 }
 
-const SignupForm = () => {
+const SignupForm: React.FC<SignupFormData> = () => {
   const [formData, setFormData] = useState<SignupFormData>({
     email: "",
     password: "",
@@ -76,7 +77,7 @@ const SignupForm = () => {
       <Typography variant="h5" sx={{ mb: 2 }}>
         Sign Up
       </Typography>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="w-full">
         <TextField
           label="Email"
           type="email"
