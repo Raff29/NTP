@@ -18,11 +18,11 @@ const Footer: React.FC<FooterProps> = () => {
   const matches = useMediaQuery('(max-width: 600px)');
 
   return (
-    <Box sx={{ position: 'fixed', bottom: 0, width: '100%', bgcolor: '#f5f5f5' }}>
+    <Box sx={{ position: 'fixed', bottom: 0, width: '100%', bgcolor: '#212121' }}>
       <Grid container sx={{ padding: 2 }}>
         <Grid item xs={12} md={6}>
           <Box display="flex" alignItems="center">
-          <img src="/logo.svg" alt="Logo" className="w-16 h-16 md:w-24 md:h-24"/>  
+          <img src="/logo2.svg" alt="Logo" className="w-16 h-16 md:w-24 md:h-24 invert"/>  
             <Stack direction={matches ? 'column' : 'row'} spacing={2}>
               {/* Links */}
               <Link underline="none" href="/"> Process</Link>
