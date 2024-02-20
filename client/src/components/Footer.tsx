@@ -11,6 +11,7 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import React from 'react';
+import { grey } from '@mui/material/colors';
 
 interface FooterProps { }
 
@@ -22,28 +23,26 @@ const Footer: React.FC<FooterProps> = () => {
       <Grid container sx={{ padding: 2 }}>
         <Grid item xs={12} md={6}>
           <Box display="flex" alignItems="center">
-          <img src="/logo2.svg" alt="Logo" className="w-16 h-16 md:w-24 md:h-24 invert"/>  
             <Stack direction={matches ? 'column' : 'row'} spacing={2}>
-              {/* Links */}
-              <Link underline="none" href="/"> Process</Link>
-              <Link underline="none" href="/"> About</Link>
-              <Link underline="none" href="/"> Contact</Link>
+              <Link color={grey[50]} underline="none" href="/"> Process</Link>
+              <Link color={grey[50]} underline="none" href="/"> About</Link>
+              <Link color={grey[50]} underline="none" href="/"> Contact</Link>
             </Stack>
           </Box>
         </Grid>
         <Grid item xs={12} md={6} display="flex" justifyContent="flex-end">
-          <IconButton aria-label="Facebook" href="/">
+          <IconButton aria-label="Facebook" href="/" className='invert'>
             <FacebookIcon />
           </IconButton>
-          <IconButton aria-label="Instagram" href="/">
+          <IconButton aria-label="Instagram" href="/" className='invert'>
             <InstagramIcon />
           </IconButton>
-          <IconButton aria-label="Twitter" href="/">
+          <IconButton aria-label="Twitter" href="/"className='invert'>
             <TwitterIcon />
           </IconButton>
         </Grid>
       </Grid>
-      <Typography variant="body2" align="center" sx={{ p: 1 }}>
+      <Typography variant="body2" align="center" sx={{ p: 1, color: grey[50] }}>
         &copy; {new Date().getFullYear()} Your Website
       </Typography>
     </Box>
