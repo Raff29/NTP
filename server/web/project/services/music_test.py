@@ -1,4 +1,3 @@
-import music21
 from instruction_service import sheet_music_to_instructions
 
 def test_instructions(musicxml_file):
