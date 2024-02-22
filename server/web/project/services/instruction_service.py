@@ -1,3 +1,4 @@
+from multiprocessing import process
 from music21 import converter, note, chord
 from music21 import tempo, dynamics, key
 import music21 as m21
@@ -6,6 +7,7 @@ from flask import current_app
 
 def sheet_music_to_instructions(file):
     instructions = []
+    stored_chord = None
 
     score = converter.parse(file)
 
@@ -13,19 +15,19 @@ def sheet_music_to_instructions(file):
 
     for part in score.parts:
         if "Piano" in str(part.getInstrument()):
-
             for measure in part.getElementsByClass('Measure'):
                 for element in measure:
                     if isinstance(element, note.Note):
-                        instructions.append(process_note(element))
+                        if stored_chord:
+                            instructions.append(process_note(element, stored_chord))
+                            stored_chord = None
+                        else:
+                            instructions.append(process_note(element))
                         for articulation in element.articulations:
                             instructions.append(
                                 get_articulation_instruction(articulation))
                     elif isinstance(element, chord.Chord):
-                        instructions.append(process_chord(element))
-                        for articulation in element.articulations:
-                            instructions.append(
-                                get_articulation_instruction(articulation))
+                        stored_chord = element
                     elif isinstance(element, note.Rest):
                         instructions.append(process_rest(element))
                     elif isinstance(element, tempo.MetronomeMark):
@@ -54,38 +56,26 @@ def extract_metadata(score):
     return instructions
 
 
-def process_note(note_element):
+def process_note(note_element, chord=None):
+    duration = note_element.duration.quarterLength
+    ticks = duration_to_ticks(duration)
     pitch = note_element.pitch
-    duration = note_element.duration
-    quarter_length = duration.quarterLength
-
-    ticks_to_hold = int(4 * quarter_length)
-
-    articulation_text = ""
-
-    for articulation in note_element.articulations:
-        articulation_text = get_articulation_instruction(articulation)
-        break
-
-    return f"Press the {pitch} key. Hold for {ticks_to_hold} ticks (feel {ticks_to_hold} heartbeats). {articulation_text}"
-
+    if chord:
+        chord_pitches = ' and '.join(str(p) for p in chord.pitches)
+        return f"Press the {pitch} key with the right hand and play the {chord_pitches} with your left hand. Hold for {ticks} ticks (feel {ticks} heartbeats)."
+    else:
+        return f"Press the {pitch} key with the right hand. Hold for {ticks} ticks (feel {ticks} heartbeats)."
 
 def process_chord(chord_element):
     pitches = chord_element.pitches
     duration = chord_element.duration
 
-    if is_gracenote(chord_element):
-        pitch_names = [str(pitch) for pitch in pitches]
-        chord_name = ' and '.join(pitch_names)
-        return "Tap the chord {} like a quick bounce and then press the next note.".format(chord_name)
+    # Calculate how many ticks to hold the chord
+    quarter_length = duration.quarterLength
+    ticks_to_hold = int(4 * quarter_length)
 
-    else:
-        # Calculate how many ticks to hold the chord
-        quarter_length = duration.quarterLength
-        ticks_to_hold = int(4 * quarter_length)
-
-        pitch_names = [str(pitch) for pitch in pitches]
-        chord_name = ' and '.join(pitch_names)
+    pitch_names = [str(pitch) for pitch in pitches]
+    chord_name = ' and '.join(pitch_names)
 
     return f"Play the chord {chord_name}. Hold for {ticks_to_hold} ticks."
 
@@ -123,10 +113,8 @@ def get_articulation_instruction(articulation):
         return ""
 
 
-def is_gracenote(chord_element):
-    duration = chord_element.duration.quarterLength
-    return duration < 0.125
-
+def duration_to_ticks(duration):
+    return int(4 * duration)
 
 def allowed_file(filename):
     return '.' in filename and \

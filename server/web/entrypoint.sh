@@ -17,5 +17,4 @@ then
   python manage.py create_db
   echo "Tables created"
 fi
-##exec command run command from yml file and 
 exec "$@"
