@@ -1,8 +1,10 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import SignupForm from "./components/SignupForm";
+import SignInForm from "./components/SignInForm";
 import Layout from "./components/Layout";
 import { ThemeProvider } from "@emotion/react";
 import theme from "./theme";
+import SignUpForm from "./components/SignUpForm";
+import Dashboard from "./components/Dashboard";
 
 function App() {
   return (
@@ -13,7 +15,19 @@ function App() {
           <Route
             path="/register"
             element={
-              <SignupForm email={""} password={""} confirm_password={""} />
+              <SignUpForm email={""} password={""} confirm_password={""} />
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              <SignInForm email={""} password={""}  />
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <Dashboard />
             }
           />
         </Routes>

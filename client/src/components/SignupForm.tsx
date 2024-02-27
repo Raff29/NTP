@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from 'react-router-dom';
 import { ChangeEvent, FormEvent, useState } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -9,21 +10,25 @@ import Container from "@mui/material/Container";
 import CssBaseline from "@mui/material/CssBaseline";
 import Avatar from "@mui/material/Avatar";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-interface SignupFormData {
+interface SignUpFormData {
   email: string;
   password: string;
   confirm_password: string;
 }
 
-const SignupForm: React.FC<SignupFormData> = () => {
-  const [formData, setFormData] = useState<SignupFormData>({
+interface ErrorData {
+  message: string;
+}
+
+const SignUpForm: React.FC<SignUpFormData> = () => {
+  const [formData, setFormData] = useState<SignUpFormData>({
     email: "",
     password: "",
     confirm_password: "",
   });
 
+  const navigate = useNavigate();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -39,7 +44,7 @@ const SignupForm: React.FC<SignupFormData> = () => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (formData.password !== formData.confirm_password) {
@@ -49,29 +54,27 @@ const SignupForm: React.FC<SignupFormData> = () => {
 
     setIsLoading(true);
 
-    fetch("/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    })
-      .then((response) => {
-        if (response.ok) {
-          setIsSubmitted(true);
-        } else {
-          return response.json().then((errorData) => {
-            throw new Error(errorData.message);
-          });
-        }
-      })
-      .catch((error) => {
-        console.error("Error submitting form", error);
-        setErrorMessage(error.message);
-      })
-      .finally(() => {
-        setIsLoading(false);
+    try {
+      const response = await fetch("/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
       });
+      if (!response.ok) {
+        const errorData: ErrorData = await response.json();
+        throw new Error(errorData.message || "Registration failed");
+      }
+
+      setIsSubmitted(true);
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Error submitting form", error);
+      setErrorMessage(error instanceof Error ? error.message : "Unknown error");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -173,4 +176,4 @@ const SignupForm: React.FC<SignupFormData> = () => {
   );
 };
 
-export default SignupForm;
+export default SignUpForm;
