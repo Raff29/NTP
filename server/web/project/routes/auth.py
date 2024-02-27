@@ -58,8 +58,7 @@ def login():
     return jsonify({'message': 'Login Page'})
 
 
-@auth.route('/logout', methods=['GET'])
-@login_required
+@auth.route('/logout', methods=['POST'])
 def logout():
     logout_user()
     return redirect(url_for('auth.login'))
