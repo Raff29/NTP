@@ -44,7 +44,7 @@ const SignInForm: React.FC<SignInFormData> = () => {
     event.preventDefault();
     setIsLoading(true);
 
-    try {
+    try { //TODO: replace this
       const response = await fetch("/login", {
         method: "POST",
         headers: {

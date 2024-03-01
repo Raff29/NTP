@@ -54,7 +54,7 @@ const SignUpForm: React.FC<SignUpFormData> = () => {
 
     setIsLoading(true);
 
-    try {
+    try { //TODO: replace this
       const response = await fetch("/register", {
         method: "POST",
         headers: {
