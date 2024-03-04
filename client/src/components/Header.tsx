@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useContext, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -12,17 +12,14 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import { grey } from "@mui/material/colors";
 import { useNavigate } from "react-router-dom";
+import AuthContext from "../context/AuthContext";
 
 const pages = ["Home", "Dashboard", "About Us"];
 const settings = ["Profile", "Logout"];
 
 function Header() {
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
-    null
-  );
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
-    null
-  );
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const navigate = useNavigate();
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -40,17 +37,11 @@ function Header() {
     setAnchorElUser(null);
   };
 
+  const auth = useContext(AuthContext);
+
   async function handleSignout() {
     try {
-      const response = await fetch("/logout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        throw new Error("Logout failed");
-      }
+      auth?.logout();
       navigate("/login");
     } catch (error) {
       console.error("Error during logout", error);

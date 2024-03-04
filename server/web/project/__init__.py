@@ -12,6 +12,9 @@ session = Session()
 
 def create_app():
     app = Flask(__name__)
+    app.config['SESSION_COOKIE_SECURE'] = True
+    app.config['SESSION_COOKIE_HTTPONLY'] = True
+    app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
     config=os.environ.get('FLASK_ENV')
     app.config.from_object(DevConfig)
     app.config['SECRET_KEY'] = os.environ['SECRET_KEY']

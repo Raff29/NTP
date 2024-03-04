@@ -1,5 +1,5 @@
-import React from "react";
-import { useNavigate } from 'react-router-dom';
+import React, { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { ChangeEvent, FormEvent, useState } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -11,14 +11,11 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Avatar from "@mui/material/Avatar";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Box from "@mui/material/Box";
+import AuthContext from "../context/AuthContext";
 interface SignUpFormData {
   email: string;
   password: string;
   confirm_password: string;
-}
-
-interface ErrorData {
-  message: string;
 }
 
 const SignUpForm: React.FC<SignUpFormData> = () => {
@@ -27,6 +24,8 @@ const SignUpForm: React.FC<SignUpFormData> = () => {
     password: "",
     confirm_password: "",
   });
+
+  const auth = useContext(AuthContext);
 
   const navigate = useNavigate();
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -54,19 +53,12 @@ const SignUpForm: React.FC<SignUpFormData> = () => {
 
     setIsLoading(true);
 
-    try { //TODO: replace this
-      const response = await fetch("/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-      if (!response.ok) {
-        const errorData: ErrorData = await response.json();
-        throw new Error(errorData.message || "Registration failed");
-      }
-
+    try {
+      await auth?.register(
+        formData.email,
+        formData.password,
+        formData.confirm_password
+      );
       setIsSubmitted(true);
       navigate("/dashboard");
     } catch (error) {

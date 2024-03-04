@@ -1,9 +1,9 @@
-from flask import Blueprint, render_template, redirect, url_for, request, current_app, jsonify, session
-from flask_login import login_required, current_user
+from flask import Blueprint,  jsonify
+from flask_login import login_required
 from .. import db
 from ..models import User
-main = Blueprint('main', __name__)
 
+main = Blueprint('main', __name__)
 
 @main.route('/')
 def index():

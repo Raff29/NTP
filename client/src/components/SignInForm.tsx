@@ -1,5 +1,5 @@
-import { ChangeEvent, FormEvent, useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { ChangeEvent, FormEvent, useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Container from "@mui/material/Container";
 import Alert from "@mui/material/Alert";
 import Avatar from "@mui/material/Avatar";
@@ -10,14 +10,11 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import LoaderSpinner from "./LoaderSpinner";
+import AuthContext from "../context/AuthContext";
 
 interface SignInFormData {
   email: string;
   password: string;
-}
-
-interface ErrorData {
-  message: string;
 }
 
 const SignInForm: React.FC<SignInFormData> = () => {
@@ -30,6 +27,7 @@ const SignInForm: React.FC<SignInFormData> = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [emailError, setEmailError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const auth = useContext(AuthContext);
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -44,19 +42,8 @@ const SignInForm: React.FC<SignInFormData> = () => {
     event.preventDefault();
     setIsLoading(true);
 
-    try { //TODO: replace this
-      const response = await fetch("/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-      if (!response.ok) {
-        const errorData: ErrorData = await response.json();
-        throw new Error(errorData.message || "Login failed");
-      }
-
+    try {
+      await auth?.login(formData.email, formData.password);
       setIsSubmitted(true);
       navigate("/dashboard");
     } catch (error) {
