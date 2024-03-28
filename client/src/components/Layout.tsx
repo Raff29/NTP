@@ -4,7 +4,7 @@ import Header from "./Header";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="bg-hero min-h-screen bg-cover">
+    <div className="min-h-screen bg-cover">
       <Header />
       {children}
       <Footer />
