@@ -132,6 +132,7 @@ function Header() {
                 key={page}
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: "white", display: "block" }}
+                href={page === 'Dashboard' ? '/dashboard' : page === 'Home' ? '/' : '/aboutus'}
               >
                 {page}
               </Button>
