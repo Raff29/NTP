@@ -84,8 +84,6 @@ def archive_instruction_logs(id):
     return jsonify(instruction_log.to_dict()), 200
 
 # DELETE operation (admin only)
-
-
 @instruction_logs.route('/instruction_logs/delete/<int:id>', methods=['DELETE'])
 @login_required
 def delete_instruction_logs(id):
