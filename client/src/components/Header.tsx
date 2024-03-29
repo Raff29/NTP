@@ -11,7 +11,7 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import { grey } from "@mui/material/colors";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 
 const pages = ["Home", "Dashboard", "About Us"];
@@ -102,7 +102,18 @@ function Header() {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                <MenuItem
+                  key={page}
+                  onClick={handleCloseNavMenu}
+                  component={Link}
+                  to={
+                    page === "Dashboard"
+                      ? "/dashboard"
+                      : page === "Home"
+                      ? "/"
+                      : "/aboutus"
+                  }
+                >
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
@@ -132,7 +143,13 @@ function Header() {
                 key={page}
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: "white", display: "block" }}
-                href={page === 'Dashboard' ? '/dashboard' : page === 'Home' ? '/' : '/aboutus'}
+                href={
+                  page === "Dashboard"
+                    ? "/dashboard"
+                    : page === "Home"
+                    ? "/"
+                    : "/aboutus"
+                }
               >
                 {page}
               </Button>
