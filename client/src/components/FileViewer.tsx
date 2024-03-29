@@ -36,8 +36,13 @@ const FileViewer: React.FC = () => {
     });
 
     const data = await response.json();
-    const nonArchivedFiles = data.filter((file: FileData) => !file.is_archived);
-    setFileData(nonArchivedFiles);
+    if (Array.isArray(data)) {
+      const nonArchivedFiles = data.filter((file: FileData) => !file.is_archived);
+      setFileData(nonArchivedFiles);
+    } else {
+      console.log("no intructions logs found");
+      setFileData([]);
+    }
   };
 
   useEffect(() => {
