@@ -14,6 +14,8 @@ import {
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useEffect, useState } from "react";
 import LoaderSpinner from "./LoaderSpinner";
+import { useFiles } from "../context/FileContext";
+import Pagination from "./Pagination";
 
 interface FileData {
   id: string;
@@ -23,10 +25,18 @@ interface FileData {
 }
 
 const FileViewer: React.FC = () => {
-  const [fileData, setFileData] = useState<FileData[]>([]);
   const [selectedFile, setSelectedFile] = useState<FileData | null>(null);
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(true);
+  const { files, addFile, archiveFile } = useFiles();
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = files
+    .filter((file) => !file.is_archived)
+    .slice(indexOfFirstItem, indexOfLastItem);
 
   const fetchFiles = async () => {
     const response = await fetch("/instruction_logs", {
@@ -37,11 +47,12 @@ const FileViewer: React.FC = () => {
 
     const data = await response.json();
     if (Array.isArray(data)) {
-      const nonArchivedFiles = data.filter((file: FileData) => !file.is_archived);
-      setFileData(nonArchivedFiles);
+      const nonArchivedFiles = data.filter(
+        (file: FileData) => !file.is_archived
+      );
+      nonArchivedFiles.forEach(addFile);
     } else {
       console.log("no intructions logs found");
-      setFileData([]);
     }
   };
 
@@ -49,19 +60,25 @@ const FileViewer: React.FC = () => {
     fetchFiles().then(() => {
       setLoading(false);
     });
-  }, []);
+  }, [files]);
 
   const archiveFiles = async (id: string) => {
-    const response = await fetch(`/instruction_logs/archive/${id}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-    });
+    try {
+      const response = await fetch(`/instruction_logs/archive/${id}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      });
 
-    const data = await response.json();
-    console.log(data);
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.status}`);
+      }
 
-    handleCloseModal();
+      archiveFile(id);
+      handleCloseModal();
+    } catch (error) {
+      console.error("API Error:", error);
+    }
   };
 
   const handleOpenModal = (file: FileData) => {
@@ -79,11 +96,11 @@ const FileViewer: React.FC = () => {
         <LoaderSpinner loading={loading} />
       ) : (
         <List className="w-full bg-gray-100 rounded p-4">
-          {fileData && fileData.length > 0 ? (
-            fileData.map((file) =>
+          {currentItems.length > 0 ? (
+            currentItems.map((file) =>
               file.instructions ? (
                 <ListItemButton
-                  key={file.filename}
+                  key={file.id}
                   onClick={() => handleOpenModal(file)}
                   className="mb-4 border border-gray-300 rounded"
                 >
@@ -120,6 +137,12 @@ const FileViewer: React.FC = () => {
           )}
         </List>
       )}
+      <Pagination
+        itemsPerPage={itemsPerPage}
+        totalItems={files.filter((file) => !file.is_archived).length}
+        currentPage={currentPage}
+        onPageChange={setCurrentPage}
+      />
       {selectedFile && (
         <Dialog open={openModal} onClose={handleCloseModal}>
           <DialogTitle>{selectedFile.filename}</DialogTitle>
