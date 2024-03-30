@@ -1,19 +1,17 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import SignInForm from "./components/SignInForm";
 import Layout from "./components/Layout";
-import { ThemeProvider } from "@emotion/react";
-import theme from "./theme";
 import SignUpForm from "./components/SignUpForm";
 import Dashboard from "./components/Dashboard";
 import PrivateRoutes from "./utils/PrivateRoutes";
 import PublicRoutes from "./utils/PublicRoutes";
 import { AuthProvider } from "./context/AuthContext";
+import { FilesProvider } from "./context/FileContext";
 
 function App() {
   return (
     <AuthProvider>
       <Router>
-        {/* <ThemeProvider theme={theme}> */}
         <Layout>
           <Routes>
             <Route path="/" />
@@ -37,7 +35,9 @@ function App() {
               path="/dashboard"
               element={
                 <PrivateRoutes>
-                  <Dashboard />
+                  <FilesProvider>
+                    <Dashboard />
+                  </FilesProvider>
                 </PrivateRoutes>
               }
             />
