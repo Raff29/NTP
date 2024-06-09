@@ -11,23 +11,22 @@ import Typography from "@mui/material/Typography";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import LoaderSpinner from "./LoaderSpinner";
 import AuthContext from "../context/AuthContext";
+import { useTheme } from "@mui/material/styles";
 
 interface SignInFormData {
   email: string;
   password: string;
 }
 
-const SignInForm: React.FC<SignInFormData> = () => {
-  const [formData, setFormData] = useState<SignInFormData>({
-    email: "",
-    password: "",
-  });
+const SignInForm: React.FC<SignInFormData> = ({ email, password }) => {
+  const [formData, setFormData] = useState<SignInFormData>({ email, password });
   const navigate = useNavigate();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [emailError, setEmailError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const auth = useContext(AuthContext);
+  const theme = useTheme();
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -38,7 +37,7 @@ const SignInForm: React.FC<SignInFormData> = () => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
   };
 
-  const handleSumit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
 
@@ -55,88 +54,98 @@ const SignInForm: React.FC<SignInFormData> = () => {
   };
 
   return (
-    <Container
-      component="main"
-      maxWidth="xs"
-      sx={{
-        backgroundColor: "white",
-        boxShadow: 3,
-        borderRadius: "8px",
-      }}
-    >
+    <Container component="main" maxWidth="xs">
       <CssBaseline />
-      <div className="container mx-auto mt-20 flex flex-col items-center">
-        <Avatar
-          sx={{
-            marginBottom: 3,
-            backgroundColor: "secondary.main",
-            marginTop: 3,
-          }}
-        >
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign in
-        </Typography>
-      </div>
-      <form onSubmit={handleSumit} className="w-full mt-8">
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '75vh', 
+        }}
+      >
         <Box
           sx={{
-            display: "flex",
-            flexDirection: "column",
-            mx: "auto",
-            padding: 2,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            backgroundColor: theme.palette.background.paper,
+            boxShadow: theme.shadows[3],
+            borderRadius: theme.shape.borderRadius,
+            padding: theme.spacing(3),
+            width: '100%',
+            maxWidth: '400px', 
           }}
         >
-          <TextField
-            autoComplete="femail"
-            autoFocus
-            label="Email"
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-            margin="normal"
-            error={emailError}
-            helperText={emailError ? "Invalid email format" : ""}
-            onBlur={() => validateEmail(formData.email)}
-            fullWidth
-          />
-          <TextField
-            label="Password"
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-            fullWidth
-            margin="normal"
-          />
-          <Button
-            variant="contained"
-            type="submit"
-            sx={{ mt: 2, mb: 2 }}
-            disabled={isLoading}
-            color="primary"
-            fullWidth
-          >
-            Sign In
-          </Button>
+          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Sign in
+          </Typography>
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              autoFocus
+              value={formData.email}
+              onChange={handleChange}
+              error={emailError}
+              helperText={emailError ? "Invalid email format" : ""}
+              onBlur={() => validateEmail(formData.email)}
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+              value={formData.password}
+              onChange={handleChange}
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{
+                mt: 3,
+                mb: 2,
+                bgcolor: theme.palette.primary.main,
+                color: 'white',
+                '&:hover': {
+                  bgcolor: theme.palette.primary.dark,
+                },
+              }}
+              disabled={isLoading}
+            >
+              Sign In
+            </Button>
+            {isLoading && <LoaderSpinner loading={isLoading} />}
+            {isSubmitted && !errorMessage ? (
+              <Alert severity="success" sx={{ mt: 2 }}>
+                Sign-in successful!
+              </Alert>
+            ) : (
+              errorMessage && (
+                <Alert severity="error" sx={{ mt: 2 }}>
+                  {errorMessage}
+                </Alert>
+              )
+            )}
+          </Box>
         </Box>
-        {isLoading && <LoaderSpinner loading={isLoading} />}
-        {isSubmitted && !errorMessage ? (
-          <Alert severity="success" sx={{ mt: 2 }}>
-            Sign-in successful!
-          </Alert>
-        ) : (
-          errorMessage && (
-            <Alert severity="error" sx={{ mt: 2 }}>
-              {errorMessage}
-            </Alert>
-          )
-        )}
-      </form>
+      </Box>
     </Container>
   );
 };

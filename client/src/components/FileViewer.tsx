@@ -10,6 +10,9 @@ import {
   DialogContentText,
   DialogActions,
   ListItemButton,
+  useTheme,
+  Typography,
+  Box,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useEffect, useState } from "react";
@@ -31,12 +34,12 @@ const FileViewer: React.FC = () => {
   const { files, addFile, archiveFile } = useFiles();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
-
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = files
     .filter((file) => !file.is_archived)
     .slice(indexOfFirstItem, indexOfLastItem);
+  const theme = useTheme();
 
   const fetchFiles = async () => {
     const response = await fetch("/instruction_logs", {
@@ -44,7 +47,6 @@ const FileViewer: React.FC = () => {
       headers: { "Content-Type": "application/json" },
       credentials: "include",
     });
-
     const data = await response.json();
     if (Array.isArray(data)) {
       const nonArchivedFiles = data.filter(
@@ -52,7 +54,7 @@ const FileViewer: React.FC = () => {
       );
       nonArchivedFiles.forEach(addFile);
     } else {
-      console.log("no intructions logs found");
+      console.log("no instructions logs found");
     }
   };
 
@@ -69,11 +71,9 @@ const FileViewer: React.FC = () => {
         headers: { "Content-Type": "application/json" },
         credentials: "include",
       });
-
       if (!response.ok) {
         throw new Error(`API Error: ${response.status}`);
       }
-
       archiveFile(id);
       handleCloseModal();
     } catch (error) {
@@ -91,30 +91,44 @@ const FileViewer: React.FC = () => {
   };
 
   return (
-    <div>
+    <Box>
       {loading ? (
         <LoaderSpinner loading={loading} />
       ) : (
-        <List className="w-full bg-gray-100 rounded p-4">
+        <List
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            minHeight: '100vh', 
+            backgroundColor: theme.palette.background.paper,
+            boxShadow: theme.shadows[3],
+            borderRadius: theme.shape.borderRadius,
+            padding: theme.spacing(3),
+          }}
+        >
           {currentItems.length > 0 ? (
             currentItems.map((file) =>
               file.instructions ? (
                 <ListItemButton
                   key={file.id}
                   onClick={() => handleOpenModal(file)}
-                  className="mb-4 border border-gray-300 rounded"
+                  sx={{
+                    mb: 2,
+                    border: `1px solid ${theme.palette.divider}`,
+                    borderRadius: theme.shape.borderRadius,
+                  }}
                 >
                   <ListItemText
                     primary={
-                      <span className="overflow-auto break-words max-w-[calc(100%-3rem)]">
-                        {file.filename}
-                      </span>
+                      <Typography variant="body1">{file.filename}</Typography>
                     }
                     secondary={
-                      <span className="overflow-auto break-words max-w-[calc(100%-3rem)]">{`${file.instructions.substring(
+                      <Typography variant="body2">{`${file.instructions.substring(
                         0,
                         100
-                      )}...`}</span>
+                      )}...`}</Typography>
                     }
                   />
                   <ListItemSecondaryAction>
@@ -133,7 +147,9 @@ const FileViewer: React.FC = () => {
               ) : null
             )
           ) : (
-            <p>No files to display</p>
+            <Typography variant="body2" color="textSecondary">
+              No files to display
+            </Typography>
           )}
         </List>
       )}
@@ -154,7 +170,7 @@ const FileViewer: React.FC = () => {
               onClick={() => archiveFiles(selectedFile.id)}
               color="primary"
             >
-              Archieve
+              Archive
             </Button>
             <Button onClick={handleCloseModal} color="primary">
               Close
@@ -162,7 +178,7 @@ const FileViewer: React.FC = () => {
           </DialogActions>
         </Dialog>
       )}
-    </div>
+    </Box>
   );
 };
 

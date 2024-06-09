@@ -11,7 +11,12 @@ const Footer: React.FC = () => {
 
   return (
     <Box
-      sx={{ position: "relative", bottom: 0, width: "100%", bgcolor: "#212121" }}
+      sx={{
+        position: "relative",
+        bottom: 0,
+        width: "100%",
+        bgcolor: "#212121",
+      }}
     >
       <Grid container sx={{ padding: 2 }}>
         <Grid item xs={12} md={6}>
@@ -26,7 +31,12 @@ const Footer: React.FC = () => {
                 color={grey[50]}
                 underline="none"
                 href="/"
-                sx={{ '&:hover': { color: 'secondary.main', textDecoration: 'underline' } }}
+                sx={{
+                  "&:hover": {
+                    color: "secondary.main",
+                    textDecoration: "underline",
+                  },
+                }}
               >
                 Process
               </Link>
@@ -34,7 +44,12 @@ const Footer: React.FC = () => {
                 color={grey[50]}
                 underline="none"
                 href="/"
-                sx={{ '&:hover': { color: 'secondary.main', textDecoration: 'underline' } }}
+                sx={{
+                  "&:hover": {
+                    color: "secondary.main",
+                    textDecoration: "underline",
+                  },
+                }}
               >
                 About
               </Link>
@@ -42,32 +57,44 @@ const Footer: React.FC = () => {
                 color={grey[50]}
                 underline="none"
                 href="/"
-                sx={{ '&:hover': { color: 'secondary.main', textDecoration: 'underline' } }}
+                sx={{
+                  "&:hover": {
+                    color: "secondary.main",
+                    textDecoration: "underline",
+                  },
+                }}
               >
                 Contact
               </Link>
             </Stack>
           </Box>
         </Grid>
-        <Grid item xs={12} md={6} display="flex" justifyContent="flex-end" alignItems="center">
+        <Grid
+          item
+          xs={12}
+          md={6}
+          display="flex"
+          justifyContent="flex-end"
+          alignItems="center"
+        >
           <IconButton
             aria-label="Facebook"
             href="/"
-            sx={{ color: grey[50], '&:hover': { color: 'secondary.main' } }}
+            sx={{ color: grey[50], "&:hover": { color: "secondary.main" } }}
           >
             <FacebookIcon />
           </IconButton>
           <IconButton
             aria-label="Instagram"
             href="/"
-            sx={{ color: grey[50], '&:hover': { color: 'secondary.main' } }}
+            sx={{ color: grey[50], "&:hover": { color: "secondary.main" } }}
           >
             <InstagramIcon />
           </IconButton>
           <IconButton
             aria-label="Twitter"
             href="/"
-            sx={{ color: grey[50], '&:hover': { color: 'secondary.main' } }}
+            sx={{ color: grey[50], "&:hover": { color: "secondary.main" } }}
           >
             <TwitterIcon />
           </IconButton>

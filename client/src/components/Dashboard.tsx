@@ -1,16 +1,35 @@
-import { FC } from "react";
-import { Container, Paper, Typography } from '@mui/material';
-import FileViewer from './FileViewer';
+import React from "react";
+import { Box, Typography, useTheme, Container } from "@mui/material";
 import FileUploader from "./FileUploader";
+import FileViewer from "./FileViewer";
 
-const Dashboard: FC = () => {
+const Dashboard: React.FC = () => {
+  const theme = useTheme();
+
   return (
-    <Container sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '85vh', padding: '8', backgroundColor: 'gray.100' }}>
-      <Paper className="w-full max-w-2xl p-8 text-center">
-        <Typography variant='h4' gutterBottom className="mb-8">Music List</Typography>
-        <FileUploader />
+    <Container
+      sx={{
+        padding: theme.spacing(4),
+        backgroundColor: theme.palette.background.default,
+        minHeight: "100vh",
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: theme.spacing(2),
+        }}
+      >
+        <Typography variant="h4" color="primary" gutterBottom>
+          Dashboard
+        </Typography>
+      </Box>
+      <FileUploader />
+      <Box sx={{ mt: theme.spacing(4) }}>
         <FileViewer />
-      </Paper>
+      </Box>
     </Container>
   );
 };
