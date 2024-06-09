@@ -12,6 +12,8 @@ import Avatar from "@mui/material/Avatar";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Box from "@mui/material/Box";
 import AuthContext from "../context/AuthContext";
+import { useTheme } from "@mui/material/styles";
+
 interface SignUpFormData {
   email: string;
   password: string;
@@ -24,15 +26,14 @@ const SignUpForm: React.FC<SignUpFormData> = () => {
     password: "",
     confirm_password: "",
   });
-
   const auth = useContext(AuthContext);
-
   const navigate = useNavigate();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [emailError, setEmailError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const theme = useTheme();
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -70,100 +71,112 @@ const SignUpForm: React.FC<SignUpFormData> = () => {
   };
 
   return (
-    <Container
-      component="main"
-      maxWidth="xs"
-      sx={{
-        backgroundColor: "white",
-        boxShadow: 3,
-        borderRadius: "8px",
-      }}
-    >
+    <Container component="main" maxWidth="xs">
       <CssBaseline />
-      <div className="container mx-auto mt-20 flex flex-col items-center">
-        <Avatar
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '75vh',
+        }}
+      >
+        <Box
           sx={{
-            marginBottom: 3,
-            backgroundColor: "secondary.main",
-            marginTop: 3,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            backgroundColor: theme.palette.background.paper,
+            boxShadow: theme.shadows[3],
+            borderRadius: theme.shape.borderRadius,
+            padding: theme.spacing(3),
+            width: '100%',
+            maxWidth: '400px',
           }}
         >
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign up
-        </Typography>
-        <form onSubmit={handleSubmit} className="w-full mt-8">
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              mx: "auto",
-              padding: 2,
-            }}
-          >
+          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Sign up
+          </Typography>
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1, width: '100%' }}>
             <TextField
-              autoComplete="femail"
-              autoFocus
-              label="Email"
-              type="email"
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
               name="email"
+              autoComplete="email"
+              autoFocus
               value={formData.email}
               onChange={handleChange}
-              required
-              margin="normal"
               error={emailError}
               helperText={emailError ? "Invalid email format" : ""}
               onBlur={() => validateEmail(formData.email)}
-              fullWidth
             />
             <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="password"
               label="Password"
               type="password"
-              name="password"
+              id="password"
+              autoComplete="current-password"
               value={formData.password}
               onChange={handleChange}
-              required
-              fullWidth
-              margin="normal"
             />
             <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="confirm_password"
               label="Confirm Password"
               type="password"
-              name="confirm_password"
+              id="confirm_password"
               value={formData.confirm_password}
               onChange={handleChange}
-              required
               error={passwordError}
               helperText={passwordError ? "Passwords do not match" : ""}
-              fullWidth
-              margin="normal"
             />
             <Button
-              variant="contained"
               type="submit"
-              sx={{ mt: 2, mb: 2 }}
-              disabled={isLoading}
-              color="primary"
               fullWidth
+              variant="contained"
+              sx={{
+                mt: 3,
+                mb: 2,
+                bgcolor: theme.palette.primary.main,
+                color: 'white',
+                '&:hover': {
+                  bgcolor: theme.palette.primary.dark,
+                },
+              }}
+              disabled={isLoading}
             >
               Sign Up
             </Button>
-          </Box>
-          {isLoading && <LoaderSpinner loading={isLoading} />}
-          {isSubmitted && !errorMessage ? (
-            <Alert severity="success" sx={{ mt: 2 }}>
-              Sign-up successful!
-            </Alert>
-          ) : (
-            errorMessage && (
-              <Alert severity="error" sx={{ mt: 2 }}>
-                {errorMessage}
+            {isLoading && <LoaderSpinner loading={isLoading} />}
+            {isSubmitted && !errorMessage ? (
+              <Alert severity="success" sx={{ mt: 2 }}>
+                Sign-up successful!
               </Alert>
-            )
-          )}
-        </form>
-      </div>
+            ) : (
+              errorMessage && (
+                <Alert severity="error" sx={{ mt: 2 }}>
+                  {errorMessage}
+                </Alert>
+              )
+            )}
+          </Box>
+        </Box>
+      </Box>
     </Container>
   );
 };
