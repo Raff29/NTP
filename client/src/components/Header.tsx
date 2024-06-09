@@ -13,6 +13,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { grey } from "@mui/material/colors";
 import { Link, useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
+import { useTheme } from "@mui/material/styles";
 
 const pages = ["Home", "Dashboard", "About Us"];
 const settings = ["Profile", "Logout"];
@@ -21,6 +22,7 @@ function Header() {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const navigate = useNavigate();
+  const theme = useTheme();
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -49,19 +51,19 @@ function Header() {
   }
 
   return (
-    <AppBar position="sticky" style={{ background: grey[900] }}>
-      <Box sx={{ paddingLeft: "10px", paddingRight: "10px" }}>
+    <AppBar position="sticky" sx={{ backgroundColor: grey[900] }}>
+      <Box sx={{ paddingLeft: theme.spacing(2), paddingRight: theme.spacing(2) }}>
         <Toolbar disableGutters>
           <img
             src="logo2.svg"
             alt="logo"
-            className="w-16 h-16 md:w-14 md:h-14 invert"
+            style={{ width: "64px", height: "64px", filter: "invert(1)" }}
           />
           <Typography
             variant="h6"
             noWrap
-            component="a"
-            href="/"
+            component={Link}
+            to="/"
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
@@ -124,8 +126,8 @@ function Header() {
           <Typography
             variant="h5"
             noWrap
-            component="a"
-            href="/"
+            component={Link}
+            to="/"
             sx={{
               mr: 2,
               display: { xs: "flex", md: "none" },
@@ -144,15 +146,7 @@ function Header() {
               <Button
                 key={page}
                 onClick={handleCloseNavMenu}
-                sx={{
-                  my: 2,
-                  color: "white",
-                  display: "block",
-                  textTransform: "none",
-                  "&:hover": {
-                    color: "secondary.main",
-                  },
-                }}
+                sx={{ my: 2, color: "white", display: "block" }}
                 component={Link}
                 to={
                   page === "Dashboard"
@@ -206,4 +200,5 @@ function Header() {
     </AppBar>
   );
 }
+
 export default Header;
