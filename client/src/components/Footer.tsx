@@ -13,7 +13,7 @@ const Footer: React.FC<FooterProps> = () => {
 
   return (
     <Box
-      sx={{ position: "fixed", bottom: 0, width: "100%", bgcolor: "#212121" }}
+      sx={{ position: "relative", bottom: 0, width: "100%", bgcolor: "#212121" }}
     >
       <Grid container sx={{ padding: 2 }}>
         <Grid item xs={12} md={6}>

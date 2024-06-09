@@ -49,7 +49,7 @@ function Header() {
   }
 
   return (
-    <AppBar position="static" style={{ background: grey[900] }}>
+    <AppBar position="sticky" style={{ background: grey[900] }}>
       <Box sx={{ paddingLeft: "10px", paddingRight: "10px" }}>
         <Toolbar disableGutters>
           <img

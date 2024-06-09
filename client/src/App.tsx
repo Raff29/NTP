@@ -7,14 +7,50 @@ import PrivateRoutes from "./utils/PrivateRoutes";
 import PublicRoutes from "./utils/PublicRoutes";
 import { AuthProvider } from "./context/AuthContext";
 import { FilesProvider } from "./context/FileContext";
+import LandingPage from "./components/Landing";
+import { createTheme,ThemeProvider } from "@mui/material/styles";
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#2D3748', // Dark Gray
+    },
+    secondary: {
+      main: '#38B2AC', // Teal
+    },
+  },
+  typography: {
+    h2: {
+      fontFamily: 'Roboto, sans-serif',
+      fontWeight: 700,
+    },
+    h5: {
+      fontFamily: 'Roboto, sans-serif',
+      fontWeight: 400,
+    },
+    body1: {
+      fontFamily: 'Roboto, sans-serif',
+      fontWeight: 300,
+    },
+  },
+});
+
 
 function App() {
   return (
+    <ThemeProvider theme={theme}>
     <AuthProvider>
       <Router>
         <Layout>
           <Routes>
-            <Route path="/" />
+            <Route
+              path="/"
+              element={
+                <PublicRoutes>
+                  <LandingPage/>
+                </PublicRoutes>
+              }
+            />
             <Route
               path="/register"
               element={
@@ -46,6 +82,7 @@ function App() {
         {/* </ThemeProvider> */}
       </Router>
     </AuthProvider>
+    </ThemeProvider>
   );
 }
 
