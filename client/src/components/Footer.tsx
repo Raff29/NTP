@@ -6,9 +6,7 @@ import TwitterIcon from "@mui/icons-material/Twitter";
 import React from "react";
 import { grey } from "@mui/material/colors";
 
-interface FooterProps {}
-
-const Footer: React.FC<FooterProps> = () => {
+const Footer: React.FC = () => {
   const matches = useMediaQuery("(max-width: 600px)");
 
   return (
@@ -18,30 +16,59 @@ const Footer: React.FC<FooterProps> = () => {
       <Grid container sx={{ padding: 2 }}>
         <Grid item xs={12} md={6}>
           <Box display="flex" alignItems="center">
-            <Stack direction={matches ? "column" : "row"} spacing={2}>
-              <Link color={grey[50]} underline="none" href="/">
-                {" "}
+            <Stack
+              direction={matches ? "column" : "row"}
+              spacing={2}
+              alignItems={matches ? "center" : "flex-start"}
+              justifyContent={matches ? "center" : "flex-start"}
+            >
+              <Link
+                color={grey[50]}
+                underline="none"
+                href="/"
+                sx={{ '&:hover': { color: 'secondary.main', textDecoration: 'underline' } }}
+              >
                 Process
               </Link>
-              <Link color={grey[50]} underline="none" href="/">
-                {" "}
+              <Link
+                color={grey[50]}
+                underline="none"
+                href="/"
+                sx={{ '&:hover': { color: 'secondary.main', textDecoration: 'underline' } }}
+              >
                 About
               </Link>
-              <Link color={grey[50]} underline="none" href="/">
-                {" "}
+              <Link
+                color={grey[50]}
+                underline="none"
+                href="/"
+                sx={{ '&:hover': { color: 'secondary.main', textDecoration: 'underline' } }}
+              >
                 Contact
               </Link>
             </Stack>
           </Box>
         </Grid>
-        <Grid item xs={12} md={6} display="flex" justifyContent="flex-end">
-          <IconButton aria-label="Facebook" href="/" className="invert">
+        <Grid item xs={12} md={6} display="flex" justifyContent="flex-end" alignItems="center">
+          <IconButton
+            aria-label="Facebook"
+            href="/"
+            sx={{ color: grey[50], '&:hover': { color: 'secondary.main' } }}
+          >
             <FacebookIcon />
           </IconButton>
-          <IconButton aria-label="Instagram" href="/" className="invert">
+          <IconButton
+            aria-label="Instagram"
+            href="/"
+            sx={{ color: grey[50], '&:hover': { color: 'secondary.main' } }}
+          >
             <InstagramIcon />
           </IconButton>
-          <IconButton aria-label="Twitter" href="/" className="invert">
+          <IconButton
+            aria-label="Twitter"
+            href="/"
+            sx={{ color: grey[50], '&:hover': { color: 'secondary.main' } }}
+          >
             <TwitterIcon />
           </IconButton>
         </Grid>

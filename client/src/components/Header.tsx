@@ -61,7 +61,7 @@ function Header() {
             variant="h6"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href="/"
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
@@ -71,7 +71,9 @@ function Header() {
               color: "inherit",
               textDecoration: "none",
             }}
-          ></Typography>
+          >
+            Notes to Play
+          </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
@@ -123,7 +125,7 @@ function Header() {
             variant="h5"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href="/"
             sx={{
               mr: 2,
               display: { xs: "flex", md: "none" },
@@ -142,8 +144,17 @@ function Header() {
               <Button
                 key={page}
                 onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
-                href={
+                sx={{
+                  my: 2,
+                  color: "white",
+                  display: "block",
+                  textTransform: "none",
+                  "&:hover": {
+                    color: "secondary.main",
+                  },
+                }}
+                component={Link}
+                to={
                   page === "Dashboard"
                     ? "/dashboard"
                     : page === "Home"
