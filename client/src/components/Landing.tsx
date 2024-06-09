@@ -4,42 +4,20 @@ import { styled } from '@mui/system';
 import { Link } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 
-const Hero = styled(Box)(({ theme }) => ({
-  background: 'url("https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4") no-repeat center center',
-  backgroundSize: 'cover',
-  color: 'white',
-  padding: theme.spacing(8, 0),
-  minHeight: '100vh',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  position: 'relative',
-  '&::before': {
-    content: '""',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    background: 'rgba(0, 0, 0, 0.5)',
-    zIndex: 1,
-  },
-  '& > *': {
-    position: 'relative',
-    zIndex: 2,
-  },
-}));
 
-const ContentBox = styled(Box)({
+const ContentBox = styled(Box)(({ theme }) => ({
   textAlign: 'center',
   zIndex: 2,
-});
+  color: 'white',
+  padding: theme.spacing(4),
+  borderRadius: theme.shape.borderRadius,
+  marginTop: theme.spacing(20),
+}));
 
 const Landing: React.FC = () => {
   const theme = useTheme();
 
   return (
-    <Hero>
       <Container>
         <ContentBox>
           <Typography variant="h2" component="h1" gutterBottom>
@@ -69,7 +47,6 @@ const Landing: React.FC = () => {
           </Button>
         </ContentBox>
       </Container>
-    </Hero>
   );
 };
 

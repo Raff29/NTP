@@ -1,23 +1,23 @@
+import React, { useEffect, useState } from "react";
 import {
   List,
+  ListItem,
   ListItemText,
   ListItemSecondaryAction,
   IconButton,
-  Button,
+  Box,
+  Typography,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogContentText,
   DialogActions,
-  ListItemButton,
+  Button,
   useTheme,
-  Typography,
-  Box,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import { useEffect, useState } from "react";
-import LoaderSpinner from "./LoaderSpinner";
 import { useFiles } from "../context/FileContext";
+import LoaderSpinner from "./LoaderSpinner";
 import Pagination from "./Pagination";
 
 interface FileData {
@@ -91,44 +91,37 @@ const FileViewer: React.FC = () => {
   };
 
   return (
-    <Box>
+    <Box sx={{ padding: theme.spacing(3) }}>
       {loading ? (
         <LoaderSpinner loading={loading} />
       ) : (
         <List
           sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            minHeight: '100vh', 
-            backgroundColor: theme.palette.background.paper,
-            boxShadow: theme.shadows[3],
+            backgroundColor: "rgba(255, 255, 255, 0.8)",
             borderRadius: theme.shape.borderRadius,
-            padding: theme.spacing(3),
+            padding: theme.spacing(2),
+            boxShadow: theme.shadows[1],
           }}
         >
           {currentItems.length > 0 ? (
             currentItems.map((file) =>
               file.instructions ? (
-                <ListItemButton
+                <ListItem
                   key={file.id}
-                  onClick={() => handleOpenModal(file)}
-                  sx={{
-                    mb: 2,
-                    border: `1px solid ${theme.palette.divider}`,
-                    borderRadius: theme.shape.borderRadius,
-                  }}
                 >
                   <ListItemText
                     primary={
-                      <Typography variant="body1">{file.filename}</Typography>
+                      <Typography
+                        variant="body1"
+                        sx={{ fontWeight: theme.typography.fontWeightMedium }}
+                      >
+                        {file.filename}
+                      </Typography>
                     }
                     secondary={
-                      <Typography variant="body2">{`${file.instructions.substring(
-                        0,
-                        100
-                      )}...`}</Typography>
+                      <Typography variant="body2">
+                        {`${file.instructions.substring(0, 100)}...`}
+                      </Typography>
                     }
                   />
                   <ListItemSecondaryAction>
@@ -143,7 +136,7 @@ const FileViewer: React.FC = () => {
                       <VisibilityIcon />
                     </IconButton>
                   </ListItemSecondaryAction>
-                </ListItemButton>
+                </ListItem>
               ) : null
             )
           ) : (

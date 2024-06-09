@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography, useTheme, Container } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import FileUploader from "./FileUploader";
 import FileViewer from "./FileViewer";
 
@@ -7,30 +7,28 @@ const Dashboard: React.FC = () => {
   const theme = useTheme();
 
   return (
-    <Container
+    <Box
       sx={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "75vh",
         padding: theme.spacing(4),
-        backgroundColor: theme.palette.background.default,
-        minHeight: "100vh",
+        backgroundColor: "rgba(255, 255, 255, 0.8)",
+        borderRadius: theme.shape.borderRadius,
+        boxShadow: theme.shadows[2],
+        justifyContent: "space-between",
       }}
     >
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          mb: theme.spacing(2),
-        }}
-      >
-        <Typography variant="h4" color="primary" gutterBottom>
-          Dashboard
-        </Typography>
+      <Typography variant="h4" color="primary" gutterBottom>
+        Dashboard
+      </Typography>
+      <Box>
+        <FileUploader />
       </Box>
-      <FileUploader />
-      <Box sx={{ mt: theme.spacing(4) }}>
+      <Box sx={{ flexGrow: 1 }}>
         <FileViewer />
       </Box>
-    </Container>
+    </Box>
   );
 };
 
