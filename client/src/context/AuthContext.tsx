@@ -63,6 +63,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     });
 
     if (!response.ok) {
+      localStorage.removeItem("isAuthenticated");
       const errorData: ErrorData = await response.json();
       throw new Error(errorData.message || "Login failed");
     }
