@@ -1,3 +1,4 @@
+import json
 from multiprocessing import process
 from music21 import converter, note, chord
 from music21 import tempo, dynamics, key
@@ -19,7 +20,8 @@ def sheet_music_to_instructions(file):
                 for element in measure:
                     if isinstance(element, note.Note):
                         if stored_chord:
-                            instructions.append(process_note(element, stored_chord))
+                            instructions.append(
+                                process_note(element, stored_chord))
                             stored_chord = None
                         else:
                             instructions.append(process_note(element))
@@ -37,7 +39,7 @@ def sheet_music_to_instructions(file):
                     elif isinstance(element, dynamics.Dynamic):
                         instructions.append(process_dynamic(element))
 
-    return instructions
+    return json.dumps(instructions)
 
 
 def extract_metadata(score):
@@ -65,6 +67,7 @@ def process_note(note_element, chord=None):
         return f"Press the {pitch} key with the right hand and play the {chord_pitches} with your left hand. Hold for {ticks} ticks (feel {ticks} heartbeats)."
     else:
         return f"Press the {pitch} key with the right hand. Hold for {ticks} ticks (feel {ticks} heartbeats)."
+
 
 def process_chord(chord_element):
     pitches = chord_element.pitches
@@ -115,6 +118,7 @@ def get_articulation_instruction(articulation):
 
 def duration_to_ticks(duration):
     return int(4 * duration)
+
 
 def allowed_file(filename):
     return '.' in filename and \
