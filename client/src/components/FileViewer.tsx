@@ -82,8 +82,25 @@ const FileViewer: React.FC = () => {
   };
 
   const handleOpenModal = (file: FileData) => {
-    setSelectedFile(file);
-    setOpenModal(true);
+    try {
+      let modifiedInstructionsString = file.instructions
+        .replace(/^{|}$/g, "") // Remove curly braces
+        .replace(/"/g, "") // Remove double quotes
+        .replace(/\. /g, ".\n") // Add newline after each period
+        .replace(/\.,/g, '. ');  // Replace comma followed by period with newline
+
+      const lines = modifiedInstructionsString.split('\n');
+      for (let i = 5; i < lines.length; i += 7) {
+        lines[i] += '\n';
+      }
+      modifiedInstructionsString = lines.join('\n');
+
+      const updatedFile = { ...file, instructions: modifiedInstructionsString };
+      setSelectedFile(updatedFile);
+      setOpenModal(true);
+    } catch (error) {
+      console.error("Error opening modal:", error);
+    }
   };
 
   const handleCloseModal = () => {
@@ -106,9 +123,7 @@ const FileViewer: React.FC = () => {
           {currentItems.length > 0 ? (
             currentItems.map((file) =>
               file.instructions ? (
-                <ListItem
-                  key={file.id}
-                >
+                <ListItem key={file.id}>
                   <ListItemText
                     primary={
                       <Typography
@@ -116,11 +131,6 @@ const FileViewer: React.FC = () => {
                         sx={{ fontWeight: theme.typography.fontWeightMedium }}
                       >
                         {file.filename}
-                      </Typography>
-                    }
-                    secondary={
-                      <Typography variant="body2">
-                        {`${file.instructions.substring(0, 100)}...`}
                       </Typography>
                     }
                   />
@@ -156,7 +166,16 @@ const FileViewer: React.FC = () => {
         <Dialog open={openModal} onClose={handleCloseModal}>
           <DialogTitle>{selectedFile.filename}</DialogTitle>
           <DialogContent>
-            <DialogContentText>{selectedFile.instructions}</DialogContentText>
+            <DialogContentText>
+              {selectedFile.instructions
+                .split("\n")
+                .map((instruction, index) => (
+                  <span key={index}>
+                    {instruction}
+                    <br />
+                  </span>
+                ))}
+            </DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button
