@@ -1,4 +1,4 @@
-import React, { useEffect, useState, memo } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   TextField,
@@ -147,4 +147,4 @@ const Profile = () => {
   );
 };
 
-export default memo(Profile);
+export default Profile;
