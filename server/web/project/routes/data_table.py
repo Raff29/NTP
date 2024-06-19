@@ -12,10 +12,10 @@ instruction_logs = Blueprint('instruction_logs', __name__)
 @instruction_logs.route('/instruction_logs', methods=['GET'])
 @login_required
 def get_instruction_logs():
-    instruction_logs = InstructionLog.query.filter_by(user_id=current_user.id).all()
-    if not instruction_logs:
+    logs = InstructionLog.query.filter_by(user_id=current_user.id).all()
+    if not logs:
         return jsonify({'error': 'Instruction logs not found'}), 404
-    return jsonify([instruction_log.to_dict() for instruction_log in instruction_logs]), 200
+    return jsonify([log.to_dict() for log in logs]), 200
 
 
 @instruction_logs.route('/instruction_logs', methods=['POST'])
@@ -36,17 +36,17 @@ def create_instruction_logs():
 
         instructions = sheet_music_to_instructions(filepath)
 
-        new_instruction_log = InstructionLog(
+        new_log = InstructionLog(
             user_id=current_user.id,
             filename=filename,
             instructions=instructions,
             is_archived=False
         )
 
-        db.session.add(new_instruction_log)
+        db.session.add(new_log)
         db.session.commit()
 
-        return jsonify(new_instruction_log.to_dict()), 201
+        return jsonify(new_log.to_dict()), 201
 
     return jsonify({'error': 'Invalid file type'}), 400
 
@@ -56,48 +56,45 @@ def create_instruction_logs():
 def update_instruction_logs(id):
     data = request.get_json()
 
-    updated_instruction_log = db.session.get(InstructionLog, id)
-    if not updated_instruction_log:
+    log = InstructionLog.query.get(id)
+    if not log:
         return jsonify({'error': 'Instruction log not found'}), 404
 
-    if data['filename'] == updated_instruction_log.filename and data['instructions'] == updated_instruction_log.instructions:
-        return jsonify({'messange': 'No changes detected'}), 200
-
-    updated_instruction_log.filename = data['filename']
-    updated_instruction_log.instructions = data['instructions']
+    log.filename = data.get('filename', log.filename)
+    log.instructions = data.get('instructions', log.instructions)
 
     db.session.commit()
 
-    return jsonify(updated_instruction_log.to_dict()), 200
+    return jsonify(log.to_dict()), 200
 
 
 @instruction_logs.route('/instruction_logs/archive/<int:id>', methods=['POST'])
 @login_required
 def archive_instruction_logs(id):
-    instruction_log = db.session.get(InstructionLog, id)
-    if instruction_log is None:
+    log = InstructionLog.query.get(id)
+    if not log:
         return jsonify({'error': 'Instruction log not found'}), 404
 
-    instruction_log.is_archived = True
+    log.is_archived = True
     db.session.commit()
 
-    return jsonify(instruction_log.to_dict()), 200
+    return jsonify(log.to_dict()), 200
 
 # DELETE operation (admin only)
 @instruction_logs.route('/instruction_logs/delete/<int:id>', methods=['DELETE'])
 @login_required
 def delete_instruction_logs(id):
     if not current_user.is_authenticated:
-        return jsonify({'error': 'Unauthorized Unauthorized'}), 401
-    
-    data = request.get_json()
-    if not data['is_admin']:
-        return jsonify({'error': 'Unauthorized Unauthorized'}), 401
+        return jsonify({'error': 'Unauthorized'}), 401
 
-    instruction_log = InstructionLog.query.filter_by(
-        user_id=current_user.id, id=id).first()
+    if not current_user.is_admin:
+        return jsonify({'error': 'Unauthorized'}), 401
 
-    db.session.delete(instruction_log)
+    log = InstructionLog.query.filter_by(user_id=current_user.id, id=id).first()
+    if not log:
+        return jsonify({'error': 'Instruction log not found'}), 404
+
+    db.session.delete(log)
     db.session.commit()
 
-    return jsonify({'message': 'InstructionLog deleted'}), 200
+    return jsonify({'message': 'Instruction log deleted'}), 200

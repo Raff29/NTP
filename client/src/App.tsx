@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import SignInForm from "./components/SignInForm";
 import Layout from "./components/Layout";
+import Profile from "./components/Profile";
 import SignUpForm from "./components/SignUpForm";
 import Dashboard from "./components/Dashboard";
 import PrivateRoutes from "./utils/PrivateRoutes";
@@ -9,7 +10,6 @@ import { AuthProvider } from "./context/AuthContext";
 import { FilesProvider } from "./context/FileContext";
 import LandingPage from "./components/Landing";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { useEffect } from "react";
 
 const theme = createTheme({
   palette: {
@@ -39,8 +39,8 @@ const theme = createTheme({
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <AuthProvider>
-        <Router>
+      <Router>
+        <AuthProvider>
           <Layout>
             <Routes>
               <Route
@@ -77,11 +77,18 @@ function App() {
                   </PrivateRoutes>
                 }
               />
+              <Route
+                path="/profile"
+                element={
+                  <PrivateRoutes>
+                    <Profile />
+                  </PrivateRoutes>
+                }
+              />
             </Routes>
           </Layout>
-          {/* </ThemeProvider> */}
-        </Router>
-      </AuthProvider>
+        </AuthProvider>
+      </Router>
     </ThemeProvider>
   );
 }

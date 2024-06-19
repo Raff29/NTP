@@ -53,4 +53,8 @@ def create_app():
     from .routes.data_table import instruction_logs as instruction_logs_blueprint
     app.register_blueprint(instruction_logs_blueprint)
     
+    #blueprint for profile route in our app
+    from .routes.profile import profile as profile_blueprint
+    app.register_blueprint(profile_blueprint)
+    
     return app

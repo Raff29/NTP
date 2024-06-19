@@ -39,6 +39,11 @@ function Header() {
     setAnchorElUser(null);
   };
 
+  const handleProfile = () => {
+    navigate("/profile");
+    handleCloseUserMenu();
+  };
+
   const auth = useContext(AuthContext);
 
   async function handleSignout() {
@@ -52,7 +57,9 @@ function Header() {
 
   return (
     <AppBar position="sticky" sx={{ backgroundColor: grey[900] }}>
-      <Box sx={{ paddingLeft: theme.spacing(2), paddingRight: theme.spacing(2) }}>
+      <Box
+        sx={{ paddingLeft: theme.spacing(2), paddingRight: theme.spacing(2) }}
+      >
         <Toolbar disableGutters>
           <img
             src="logo2.svg"
@@ -187,7 +194,11 @@ function Header() {
                 <MenuItem
                   key={setting}
                   onClick={
-                    setting === "Logout" ? handleSignout : handleCloseUserMenu
+                    setting === "Logout"
+                      ? handleSignout
+                      : setting === "Profile"
+                      ? handleProfile
+                      : handleCloseUserMenu
                   }
                 >
                   <Typography textAlign="center">{setting}</Typography>

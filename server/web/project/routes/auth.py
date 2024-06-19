@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, url_for, flash, jsonify
+from flask import Blueprint, request, flash, jsonify
 from flask_login import login_user, current_user, logout_user
 from ..services.form_service import RegistrationForm, LoginForm
 from .. import db
@@ -9,9 +9,10 @@ auth = Blueprint('auth', __name__)
 
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
+    data = request.get_json()
     form = RegistrationForm()
 
-    if form.validate_on_submit():
+    if form.validate():
         if form.password.data != form.confirm_password.data:
             return jsonify({'message': 'Passwords do not match'}), 400
 
@@ -20,7 +21,6 @@ def register():
 
         user = User.query.filter_by(email=email).first()
         if user:
-            print('Email address already exists')
             return jsonify({'message': 'Email address already exists'}), 400
 
         new_user = User(email=email, password=password)
@@ -31,18 +31,17 @@ def register():
 
         return jsonify({'message': 'Registration successful'}), 200
     else:
-        flash("Form validation failed")
-        flash("Form errors: ", form.errors)
         return jsonify({'errors': form.errors}), 400
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
-    form = LoginForm()
-
     if current_user.is_authenticated:
         return jsonify({'message': 'Already logged in'}), 200
+    
+    data = request.get_json()
+    form = LoginForm(data=data)
 
-    if form.validate_on_submit():
+    if form.validate():
         email = form.email.data
         password = form.password.data
 
@@ -51,10 +50,9 @@ def login():
             login_user(user)
             return jsonify({'message': 'Login successful'}), 200
         else:
-            print('Invalid email or password')
             return jsonify({'message': 'Invalid email or password'}), 401
 
-    return jsonify({'message': 'Login Page'}), 200
+    return jsonify({'errors': form.errors}), 400
 
 
 @auth.route('/logout', methods=['POST'])
