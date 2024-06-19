@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, memo } from "react";
+import React, { useEffect, useState, memo } from "react";
 import {
   Button,
   TextField,
@@ -19,7 +19,7 @@ const Profile = () => {
   const theme = useTheme();
 
   const fetchProfile = async () => {
-    try{
+    try {
       const response = await fetch("/profile", {
         method: "GET",
         headers: { "Content-Type": "application/json" },
@@ -37,12 +37,11 @@ const Profile = () => {
     } catch (error) {
       console.error("Error fetching profile:", error);
     }
-  }
+  };
 
   useEffect(() => {
     fetchProfile();
   }, []);
-
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
@@ -59,11 +58,10 @@ const Profile = () => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
-
   };
 
   const handleCancel = () => {
-    navigate("/dashboard")
+    navigate("/dashboard");
   };
 
   return (
