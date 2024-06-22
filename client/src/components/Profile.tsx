@@ -10,10 +10,18 @@ import {
 import { useNavigate } from "react-router-dom";
 import LoaderSpinner from "./LoaderSpinner";
 
+interface ProfileData {
+  name: string;
+  email: string;
+  password?: string;
+  id?: number;
+}
+
 const Profile = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [userId, setUserId] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const theme = useTheme();
@@ -31,11 +39,36 @@ const Profile = () => {
       }
 
       const data = await response.json();
-      console.log("Profile data:", data);
-      setName(data.name || "");
-      setEmail(data.email || "");
+      setName(data.name);
+      setEmail(data.email);
+      setUserId(data.id);
     } catch (error) {
       console.error("Error fetching profile:", error);
+    }
+  };
+
+  const updateProfile = async (id: number, profileData: ProfileData) => {
+    console.log(userId, profileData);
+    try {
+      const response = await fetch(`/profile/update/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(profileData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Profile fetch failed");
+      }
+
+      const data = await response.json();
+      setName(data.name || "");
+      setEmail(data.email || "");
+      setPassword(data.password || "");
+    } catch (error) {
+      console.error("Error updating profile:", error);
+    } finally {
+      navigate("/dashboard");
     }
   };
 
@@ -55,9 +88,11 @@ const Profile = () => {
     setPassword(event.target.value);
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
+    await updateProfile(Number(userId), { name, email, password });
+    setIsLoading(false);
   };
 
   const handleCancel = () => {
