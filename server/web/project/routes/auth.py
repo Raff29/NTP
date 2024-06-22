@@ -33,11 +33,12 @@ def register():
     else:
         return jsonify({'errors': form.errors}), 400
 
+
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
         return jsonify({'message': 'Already logged in'}), 200
-    
+
     data = request.get_json()
     form = LoginForm(data=data)
 
