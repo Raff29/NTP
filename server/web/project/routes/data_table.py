@@ -14,7 +14,7 @@ instruction_logs = Blueprint('instruction_logs', __name__)
 def get_instruction_logs():
     logs = InstructionLog.query.filter_by(user_id=current_user.id).all()
     if not logs:
-        return jsonify({'error': 'Instruction logs not found'}), 404
+        return jsonify([]), 200
     return jsonify([log.to_dict() for log in logs]), 200
 
 
@@ -81,6 +81,8 @@ def archive_instruction_logs(id):
     return jsonify(log.to_dict()), 200
 
 # DELETE operation (admin only)
+
+
 @instruction_logs.route('/instruction_logs/delete/<int:id>', methods=['DELETE'])
 @login_required
 def delete_instruction_logs(id):
@@ -90,7 +92,8 @@ def delete_instruction_logs(id):
     if not current_user.is_admin:
         return jsonify({'error': 'Unauthorized'}), 401
 
-    log = InstructionLog.query.filter_by(user_id=current_user.id, id=id).first()
+    log = InstructionLog.query.filter_by(
+        user_id=current_user.id, id=id).first()
     if not log:
         return jsonify({'error': 'Instruction log not found'}), 404
 
