@@ -48,7 +48,8 @@ const Profile = () => {
   };
 
   const updateProfile = async (id: number, profileData: ProfileData) => {
-    console.log(userId, profileData);
+    const { password, ...nonSensitiveProfileData } = profileData;
+    console.log(userId, nonSensitiveProfileData);
     try {
       const response = await fetch(`/profile/update/${id}`, {
         method: "PATCH",
